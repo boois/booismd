@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>www.boois.cn</title>
+    <script type="text/javascript" src="http://cdn.boois.cn/jquery/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="http://cdn.boois.cn/marked/marked.js"></script>
+    <script type="text/javascript" src="http://cdn.boois.cn/marked/booismd.js"></script>
+    <link rel="stylesheet" type="text/css" href="style1.css" />
+    <link rel="stylesheet" type="text/css" href="http://cdn.boois.cn/css/public.css" />
+    <script type="text/javascript" src="http://cdn.boois.cn/highlight/highlight.pack.js"></script>
+    <link rel="stylesheet" href="http://cdn.boois.cn/highlight/xcode.css">
+    <!--<link rel="stylesheet" href="http://cdn.boois.cn/highlight/monokai.css">-->
+    <!--<link rel="stylesheet" href="http://cdn.boois.cn/highlight/pojoaque.css">-->
+    <!--<link rel="stylesheet" href="http://cdn.boois.cn/highlight/railscasts.css">-->
+    <!--<link rel="stylesheet" href="http://cdn.boois.cn/highlight/rainbow.css">-->
+<script>
+    window.page = -1;//如果默认加载文档时就整页显示,请设置page为 -1
+    $(function () {
+        booisMarked(
+            2, //0=原始markdown,1=github标准的marked,2=在marked标准上做的boois扩展
+            "#md_soucre", //数据来源容器id,注意加#号
+            "#content", //内容渲染容器id,注意加#号
+            "#nav", //分页标签渲染容器id,注意加#号
+            {   //表情图标增量自定义图片
+            "xixi": "http://cdn.boois.cn/emoji/weibo/tootha_thumb.gif" //文章内 [xixi] 将被替换为您指定的表情图片(22*22)
+        }
+        );
+        $(".page_tag").click(function () {
+            $("body").scrollTop(0); //点击页码标签时将滚动条滚到头部
+            $('pre code').each(function (i, block) { // 点击分页时重新渲染highlight
+                hljs.highlightBlock(block);
+            });
+        });
+        hljs.initHighlightingOnLoad();//highlight初始化,不使用可以注释掉
+    });
+</script>
+<style>
+    #top {width:640px;height:80px;margin:10px auto;color:#888;text-align:right;margin-bottom:30px;}
+        #top img {float:left;height:80px;margin-right:20px;}
+        #top b {float:right;height:30px;line-height:30px;margin-top:20px;font-size:18px;}
+        #top span {float:right;height:30px;line-height:30px;font-size:14px;}
+    #content {width:640px;height:auto;margin:10px auto;}
+    #nav {display:table;text-align:center;border-top:1px solid #ccc;padding-top:15px;width:640px;margin:10px auto;}
+        #nav a{padding:3px 8px;color:#555;border:1px solid #eee;margin-right:3px;text-decoration:none;}
+        #nav a:hover,#nav a.atv {background:#f60;color:#fff;border:1px solid #f60;}
+</style>
+<script id="md_soucre" data-id="markdown" style="display:none;" type="text/template">
+-----------------------------
+
+### 什么是Markdown？
+Markdown是在文字书写时,采用极少极简单的通过标记,使普通文本内容具有一定的html格式。
+与html相比,写文字的人不用关心过多的文字表现形式和排版,有利于将注意力集中到写作上来。
+用Markdown语法写出来的东西,专注于内容本身,非常简洁而干净。[百度百科:markdown](http://baike.baidu.com/view/2311114.htm)
+
+###  是什么 marked.js?
+marked.js 是一个基于javascript的markdown语法解释器,可运行在node.js。marked.js
+在支持原始markdown语法时做了扩展,支持了github风格的tables等语法。需要做后端一
+致的语法编译,可以架设node.js服务器,用服务向后端提供语法翻译。[gitbub:marked.js](https://github.com/chjj/marked)
+
+### booismd.js 是什么?
+booismd.js 是在marked.js的基础上增加了几个个性化的配置和具体的单页渲染机制,由 [萧鸣](mailto://boois@qq.com) 制作
+
+---------------------------------------
+
+### booismd.js 的具体使用方法：
+
+###### 当前html文件遵循以下规则,可右键直接查看源码或将当前页面另存后直接编辑.
+
+1. **引入必须的文件 :**
+> &lt;script type="text/javascript" src="<http://cdn.boois.cn/jquery/jquery-1.8.3.min.js>">&lt;/script>  
+    &lt;script type="text/javascript" src="<http://cdn.boois.cn/marked/marked.js">>&lt;/script>  
+    &lt;script type="text/javascript" src="<http://cdn.boois.cn/marked/booismd.js">>&lt;/script>  
+    &lt;link rel="stylesheet" type="text/css" href="<http://cdn.boois.cn/marked/style1.css>" />  
+    &lt;!--如果不使用highlight进行代码语法高亮,可不引入下面两个文件-->  
+    &lt;script type="text/javascript" src="<http://cdn.boois.cn/highlight/highlight.pack.js>">&lt;/script>  
+    &lt;link rel="stylesheet" href="<http://cdn.boois.cn/highlight/xcode.css>" />
+2. **将以下代码放置在引入的文件之后:  **
+```
+window.page = -1;//如果默认加载文档时就整页显示,请设置page为 -1  
+$(function () {
+    booisMarked(
+        2, //0=原始markdown,1=github标准的marked,2=在marked标准上做的boois扩展
+        "#md_soucre", //数据来源容器id,注意加#号
+        "#content", //内容渲染容器id,注意加#号
+        "#nav", //分页标签渲染容器id,注意加#号
+        {   //表情图标增量自定义图片
+            "xixi": "http://cdn.boois.cn/emoji/weibo/tootha_thumb.gif" //文章内 \[xixi] 将被替换为您指定的表情图片(22*22)
+        }
+    ); 
+    $(".page_tag").click(function () {
+        $("body").scrollTop(0);//点击页码标签时将滚动条滚到头部
+        $('pre code').each(function (i, block) { // 点击分页时重新渲染highlight
+            hljs.highlightBlock(block);
+        });
+    });
+    hljs.initHighlightingOnLoad();//highlight初始化,不使用可以注释掉
+});
+```
+3. 用js生成内容的方式,页面对于搜索引擎并不友好,如果将markdown原始内容放在#content中,搜索引擎搜到的是markdown的纯文本,
+如果希望对搜索引擎友好,建议将markdown内容写在 script 标签中,可以不被搜索引擎收录到,而将生成后的html代码在火狐或谷歌
+浏览器中复制到#content标签中,搜索引擎就可以正常抓取到html了(在内容上点鼠标右键->检查->选择相应的html->复制)。
+> &lt;script id="md_soucre" data-id="markdown" style="display:none;" type="text/template">内容&lt;script/>
+
+4. 关于css样式表,可以到互联网上去搜索markdown和highlight的相关样式,网上很多,当然也可以根据现有的css自己进行改进。
+<!-- page -->
+
+-------------------
+#### 语法概览:
+
+|Markdown|输出后的效果|
+|:-|:-|
+|\*\*text\*\*|粗体
+|\*text\*|斜体字
+|\~~text\~~|删除线
+|\[链接文字](http\://链接地址)|链接
+|&lt;http\://链接地址>|链接的简单写法,不写尖括号也可以,但尾部和其他字符没有间隔空格时会出错
+|\!\[图片描述文字](http\://图片地址)|图片,也就是在链接前加一个感叹号,方括号中的文字将成为alt属性
+| \- 列表文字|列表(也可以用*号,+号,注意带一个空格)
+| 1. 列表文字|有序列表(注意带一个空格)
+|> 引用文字|引用文字(注意带一个空格)
+|	\`代码`|代码块( 反引号按键在ESC键下方)
+|  \```[br]code[br]\``` | .c1_代码块(非标,gfm支持)_.c1 ,会转为&lt;pre>&lt;code>&lt;/code>&lt;/pre>[br]符合highlight.js的用法.
+|---|画水平线,也就是html中的hr
+| \# H1  | 表示1号字体大小的标题|
+| \## H2 | 表示2号字体大小的标题|
+|  \### H3 | 表示3号字体大小的标题|
+|  \#### H4 | 表示4号字体大小的标题|
+|  \##### H5 | 表示5号字体大小的标题|
+| \###### H6 | 表示6号字体大小的标题|
+| Alt-H1<br/>====== | 1号字标题也可以采用等于号"==="划在文字下方来表示,这种方式在文档中看起来也有利于分割标题与内容。|
+| Alt-H2<br/>------ | 2号字标题也可以采用"---"划在文字下方来表示,这种方式在文档中看起来也有利于分割标题与内容。|
+
+
+|其他操作	|说明|
+|:-|:-|
+|换行|行尾输入两个空格,也可以用&lt;br/>(不建议)
+|段落|两行之间空一行,则形成段落
+
+<!-- page -->
+
+---------------------------------------
+#### 链接的另一种写法,引用方式:
+直接的写法是 \[链接文字](http\://链接地址)
+我们也可以采用引用方式来写链接:<br/>
+\[链接文字][1]<br/>
+\[1]: http\://baidu.com/      "链接描述"<br/>
+为什么要这样写呢?至少有两种情况需要这样写,一是链接中包含了括号,二是页面上可能会多次写到一个链接,我们可以只将它定义一次。
+
+#### .c3_表格的写法(非markdown语法,由github拓展)_.c3 :
+
+| 范例标题1 | 范例标题2  | 范例标题3 |<br/>
+| :---------- | :-----------: |-----------: |<br/>
+| 左冒号左对齐  | 双冒号居中显示 | 右冒号右对齐 |<br/>
+| 左   |  中 |  右 |<br/>
+
+
+#### .c3_当前编辑器的个性化方法(by 萧鸣)_.c3 :
+当前编辑器在markdown的基础上扩展了一些功能:
+
+|语法	|说明 |
+|:--------|:-|
+|<!--注释--<span>></span>|等同于html中的注释,注释后的文字将不会显示出来,可以做旁注用
+|<!--page 分页说明--<span>></span>|分页功能,分页说明可以不写
+|\[表情]|默认表情代码:\[笑cry]\[微笑]\[嘻嘻]\[哈哈]\[可爱]\[可怜]\[挖鼻]\[吃惊][br]\[害羞]\[闭嘴]\[挤眼]\[鄙视]\[爱你]\[泪]\[偷笑]\[亲亲]\[生病]\[太开心][br]\[白眼]\[右哼哼]\[左哼哼]\[嘘]\[衰]\[委屈]\[吐]\[哈欠]\[抱抱]\[怒]\[疑问][br]\[馋嘴]\[拜拜]\[思考]\[汗]\[困]\[睡]\[钱]\[失望]\[酷]\[色]\[哼]\[鼓掌]\[晕][br]\[悲伤]\[抓狂]\[黑线]\[阴险]\[怒骂]\[心]\[伤心]\[ok]\[耶]\[good]\[NO][br]\[赞]\[来]\[弱]\[给力]\[威武]\[蜡烛]
+|.c1\_文字_.c1 |样式,对文字进行着色或加样式,"\_.c1 "末尾带一个空格,[br]使用class=c1的样式,具体的表现由css来决定
+|\... |三个英文句号表示一个空格(相当于按4下空格键)
+|\[br] |强制断行
+|\\\. |转义点,以便能正常输入\. 号
+|\\\[ |转义方括号,以便能正常输入\[
+|\\\: |转义默冒号,以便能将一个链接当做文本来写 http\://www.boois.cn
+
+
+#### 如何插入视频?
+请在各大视频网站的具体视频页面中的分享按钮中,找到相应的分享代码,将代码拷贝到编辑器中即可,建议采用iframe的方式,兼容性更高。
+
+#### 资源链接:
+本编辑器由 [萧鸣(boois@qq.com)](mailto://boois@qq.com) 基于 [marked.js](https://github.com/chjj/marked) 制作<br/>
+需要更详细的Markdown说明请自行 [百度](https://www.baidu.com/s?wd=markdown)。
+</script>
+<base target="_blank"/><!--用来表示页面中所有a标签链接点击后,新开一个页面-->
+</head>
+<body>
+<div id="top">
+<img src=http://cdn.boois.cn/logo/boois_2.png align=left/>
+<b>booismd.js 使用说明文档 v1.0</b>
+<span>by 萧鸣 (boois@qq.com) 2016.2.20</span>
+</div>
+<div id="content" class="marked_view_box">
+</div>
+<div id="nav">
+</div>
+</body>
+</html>
